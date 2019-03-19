@@ -83,9 +83,9 @@ class Vocabulary(object):
 # splitting the data set into N chunks where N is the batch_size and
 # the chunks are contiguous parts of the data.
 # For each batch, we return one sequence from each of the chunks.
-class Dataset(torch.utils.data.Dataset):
+class ContinuousDataset(torch.utils.data.Dataset):
     def __init__(self, data_file, sequence_length, batch_size):
-        super(Dataset, self).__init__()
+        super(ContinuousDataset, self).__init__()
 
         self.sequence_length = sequence_length
         self.batch_size = batch_size
@@ -140,12 +140,13 @@ class Dataset(torch.utils.data.Dataset):
         return len(self.vocab)
 
 
-def main():
-    data_path = './data/movie/'
-    processed_data_path = './data/movie/'
-    unk_threshold = 2
+DATA_PATH = './data/movie/'
+PROCESSED_DATA_PATH = './data/movie/'
+UNK_THRESHOLD = 2
 
-    prepare_data(data_path, processed_data_path, unk_threshold)
+
+def main():
+    prepare_data(DATA_PATH, PROCESSED_DATA_PATH, UNK_THRESHOLD)
 
 
 if __name__ == "__main__":

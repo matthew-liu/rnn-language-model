@@ -15,30 +15,26 @@ import matplotlib.pyplot as plt
 TEMPERATURE = 1.5
 
 
-class HarryPotterNet(nn.Module):
+class ForwardGRUNet(nn.Module):
     def __init__(self, vocab_size, feature_size):
-        super(HarryPotterNet, self).__init__()
+        super(ForwardGRUNet, self).__init__()
         self.vocab_size = vocab_size
         self.feature_size = feature_size
         self.encoder = nn.Embedding(self.vocab_size, self.feature_size)
-        self.gru = nn.GRU(self.feature_size, self.feature_size, num_layers=2, batch_first=True)
+        self.gru = nn.GRU(self.feature_size, self.feature_size, num_layers=2, batch_first=True, dropout=0.1)
         self.decoder = nn.Linear(self.feature_size, self.vocab_size)
 
-        # This shares the encoder and decoder weights as described in lecture.
+        # This shares the encoder and decoder weights
         self.decoder.weight = self.encoder.weight
         self.decoder.bias.data.zero_()
 
         self.best_accuracy = -1
 
     def forward(self, x, hidden_state=None):
-        batch_size = x.shape[0]
-        sequence_length = x.shape[1]
-
         x = self.encoder(x)
         x, hidden_state = self.gru(x, hidden_state)
         x = self.decoder(x)
 
-        # You should return the output from the decoder as well as the hidden state given by the gru.
         return x, hidden_state
 
     # This defines the function that gives a probability distribution and implements the temperature computation.
