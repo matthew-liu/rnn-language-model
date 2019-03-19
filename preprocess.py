@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 
 # word vocab
-def prepare_data(input_folder_path, output_folder_path, unk_threshold=1,   v=0.1):
+def prepare_data(input_folder_path, output_folder_path, unk_threshold=1, test_split=0.1):
 
     # load all train/dev/test data into one word vector
     data = []
@@ -49,10 +49,10 @@ def prepare_data(input_folder_path, output_folder_path, unk_threshold=1,   v=0.1
 
     ind2voc = {val: key for key, val in voc2ind.items()}
 
-    num = int(0.9 * len(tokens))
+    train_set_length = int((1 - test_split) * len(tokens))
 
-    train_text = tokens[:num]
-    test_text = tokens[num:]
+    train_text = tokens[:train_set_length]
+    test_text = tokens[train_set_length:]
 
     pickle.dump({'tokens': train_text, 'ind2voc': ind2voc, 'voc2ind': voc2ind},
                 open(output_folder_path + 'train.pkl', 'wb'))
@@ -78,6 +78,66 @@ class Vocabulary(object):
     # Returns the size of the vocabulary.
     def __len__(self):
         return len(self.voc2ind)
+
+
+# splitting the data set into N chunks where N is the batch_size and
+# the chunks are contiguous parts of the data.
+# For each batch, we return one sequence from each of the chunks.
+class Dataset(torch.utils.data.Dataset):
+    def __init__(self, data_file, sequence_length, batch_size):
+        super(Dataset, self).__init__()
+
+        self.sequence_length = sequence_length
+        self.batch_size = batch_size
+        self.vocab = Vocabulary(data_file)
+
+        with open(data_file, 'rb') as data_pkl:
+            dataset = pickle.load(data_pkl)
+
+        tokens = dataset['tokens']
+
+        # removing extra bits at the end of tokens
+        extra = len(tokens) % batch_size
+        tokens = tokens[:len(tokens) - extra]
+
+        # divide tokens into N=batch_size chunks
+        self.chunks = {}
+        chunk_length = int(len(tokens) / batch_size)
+        assert (chunk_length >= sequence_length + 1)
+        extra = (chunk_length - 1) % sequence_length
+        chunk_size = int((chunk_length - 1) / sequence_length)
+        for i in range(batch_size):
+            chunk_tokens = tokens[i * chunk_length:(i + 1) * chunk_length]
+            self.chunks[i] = []
+            for j in range(chunk_size):
+                self.chunks[i].append(chunk_tokens[j * sequence_length:(j + 1) * sequence_length + 1])
+            if extra > 0:
+                self.chunks[i].append(chunk_tokens[chunk_length - extra - 1:chunk_length])
+
+        # total number of unique sequences
+        if extra > 0:
+            chunk_size += 1
+        self.size = len(self.chunks) * chunk_size
+        assert (self.size % batch_size == 0)
+
+    def __len__(self):
+        # return the number of unique sequences you have, not the number of characters.
+        return self.size
+
+    def __getitem__(self, idx):
+        # Return the data and label for a character sequence as described above.
+        # The data and labels should be torch long tensors.
+        # You should return a single entry for the batch using the idx to decide which chunk you are
+        # in and how far down in the chunk you are.
+
+        batch_idx = int(idx / self.batch_size)
+        batch_offset = idx % self.batch_size
+
+        data = torch.tensor(self.chunks[batch_offset][batch_idx]).long()
+        return data[:-1], data[1:]
+
+    def vocab_size(self):
+        return len(self.vocab)
 
 
 def main():
