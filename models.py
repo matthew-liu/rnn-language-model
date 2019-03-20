@@ -1,15 +1,7 @@
 import torch
 import torch.nn as nn
-from torchvision import datasets
-from torchvision import transforms
-import numpy as np
 import torch.nn.functional as F
-import torch.optim as optim
-import sys
-import pickle
-import re
 import utils
-import matplotlib.pyplot as plt
 
 
 TEMPERATURE = 1.5
@@ -21,7 +13,7 @@ class ForwardGRUNet(nn.Module):
         self.vocab_size = vocab_size
         self.feature_size = feature_size
         self.encoder = nn.Embedding(self.vocab_size, self.feature_size)
-        self.gru = nn.GRU(self.feature_size, self.feature_size, num_layers=2, batch_first=True, dropout=0.1)
+        self.gru = nn.GRU(self.feature_size, self.feature_size, num_layers=2, batch_first=True)
         self.decoder = nn.Linear(self.feature_size, self.vocab_size)
 
         # This shares the encoder and decoder weights
@@ -47,7 +39,7 @@ class ForwardGRUNet(nn.Module):
         return torch.squeeze(x), hidden_state
 
     # Predefined loss function
-    def loss(self, prediction, label, reduction='elementwise_mean'):
+    def loss(self, prediction, label, reduction='mean'):
         loss_val = F.cross_entropy(prediction.view(-1, self.vocab_size), label.view(-1), reduction=reduction)
         return loss_val
 
