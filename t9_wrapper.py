@@ -34,12 +34,14 @@ class GRUModel:
                 data = ind.to(self.device)
                 output, hidden = self.model.inference(data, hidden)
 
-            return output
+            return output.detach().cpu().numpy()
 
     def id_to_token(self, i):
+        if i == -1:
+            return self.unk
         return self.vocab.ind2voc[i]
 
     def token_to_id(self, token):
         if token in self.vocab.voc2ind:
             return self.vocab.voc2ind[token]
-        return self.unk
+        return -1
