@@ -199,8 +199,8 @@ UNK_THRESHOLD = 5
 
 
 def main():
-    # prepare_data_word(DATA_PATH, PROCESSED_DATA_PATH, UNK_THRESHOLD)
-    prepare_data_char(DATA_PATH, PROCESSED_DATA_PATH)
+    prepare_data_word(DATA_PATH, PROCESSED_DATA_PATH, UNK_THRESHOLD)
+    # prepare_data_char(DATA_PATH, PROCESSED_DATA_PATH)
 
 
 if __name__ == "__main__":

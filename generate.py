@@ -109,12 +109,28 @@ def predict_sequence(model, device, seed_words, sequence_length, vocab, sampling
         return vocab.array_to_words(seed_words_arr.tolist() + outputs)
 
 
+def predict_next_word(model, device, seed_words, vocab, n=8):
+    model.eval()
+    with torch.no_grad():
+        seed_words_arr = vocab.words_to_array(seed_words)
+
+        # Computes the initial hidden state from the prompt (seed words).
+        hidden = None
+        for ind in seed_words_arr:
+            data = ind.to(device)
+            output, hidden = model.inference(data, hidden)
+
+        _, indices = torch.sort(output, descending=True)
+        return vocab.array_to_words(indices[:n]).split(' ')
+
+
 def main():
 
-    model_path = './best_models'
-    featur_size = 512
+    model_path = './best_models/word_large'
+    featur_size = 300
 
-    vocab = prep.CharVocab(prep.PROCESSED_DATA_PATH + 'train.pkl')
+    # vocab = prep.CharVocab(prep.PROCESSED_DATA_PATH + 'train.pkl')
+    vocab = prep.WordVocab(prep.PROCESSED_DATA_PATH + 'train.pkl')
     print('vocab size:', len(vocab))
 
     USE_CUDA = False
@@ -128,13 +144,14 @@ def main():
     seed_words = ''
 
     while True:
-        next_word = sys.stdin.readline().strip()
-        if next_word == 'exit':
+        seed_words = sys.stdin.readline().strip()
+        if seed_words == 'exit':
             exit()
-        seed_words += next_word
-        print('seed_words:', seed_words)
+        # print('seed_words:', seed_words)
         if len(seed_words) > 0:
-            completions = predict_completions(model, device, seed_words, vocab, n=8)
+
+            # completions = predict_completions(model, device, seed_words, vocab, n=8)
+            completions = predict_next_word(model, device, seed_words, vocab, n=8)
             print('completions\t', completions)
 
     # seed_words = 'It\'s such a nice day today '

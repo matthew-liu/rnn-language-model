@@ -2,3 +2,5 @@
 .idea/
 __pycache__/
 data/movie/*.pkl
+checkpoints/
+
