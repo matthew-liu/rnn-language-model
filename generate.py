@@ -127,7 +127,7 @@ def predict_next_word(model, device, seed_words, vocab, n=8):
 def main():
 
     model_path = './best_models/word_large'
-    featur_size = 300
+    featur_size = 512
 
     # vocab = prep.CharVocab(prep.PROCESSED_DATA_PATH + 'train.pkl')
     vocab = prep.WordVocab(prep.PROCESSED_DATA_PATH + 'train.pkl')
