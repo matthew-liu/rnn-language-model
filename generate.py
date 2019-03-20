@@ -17,6 +17,8 @@ import models
 
 import sys
 
+import t9_wrapper.GRUModel as GRUModel
+
 
 BEAM_WIDTH = 10
 
@@ -127,7 +129,7 @@ def predict_next_word(model, device, seed_words, vocab, n=8):
 def main():
 
     model_path = './best_models/word_large'
-    featur_size = 512
+    feature_size = 512
     char_vocab = False
 
     if char_vocab:
@@ -142,7 +144,7 @@ def main():
     device = torch.device("cuda" if use_cuda else "cpu")
     print('Using device', device)
 
-    model = models.ForwardGRUNet(len(vocab), featur_size).to(device)
+    model = models.ForwardGRUNet(len(vocab), feature_size).to(device)
     model.load_last_model(model_path)
 
     seed_words = ''
