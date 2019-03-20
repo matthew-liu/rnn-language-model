@@ -128,9 +128,13 @@ def main():
 
     model_path = './best_models/word_large'
     featur_size = 512
+    char_vocab = False
 
-    # vocab = prep.CharVocab(prep.PROCESSED_DATA_PATH + 'train.pkl')
-    vocab = prep.WordVocab(prep.PROCESSED_DATA_PATH + 'train.pkl')
+    if char_vocab:
+        vocab = prep.CharVocab(prep.PROCESSED_DATA_PATH + 'train.pkl')
+    else:
+        vocab = prep.WordVocab(prep.PROCESSED_DATA_PATH + 'train.pkl')
+
     print('vocab size:', len(vocab))
 
     USE_CUDA = False
@@ -150,8 +154,10 @@ def main():
         # print('seed_words:', seed_words)
         if len(seed_words) > 0:
 
-            # completions = predict_completions(model, device, seed_words, vocab, n=8)
-            completions = predict_next_word(model, device, seed_words, vocab, n=8)
+            if char_vocab:
+                completions = predict_completions(model, device, seed_words, vocab, n=8)
+            else:
+                completions = predict_next_word(model, device, seed_words, vocab, n=8)
             print('completions\t', completions)
 
     # seed_words = 'It\'s such a nice day today '
