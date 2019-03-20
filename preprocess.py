@@ -195,7 +195,7 @@ class ContinuousDataset(torch.utils.data.Dataset):
 
 DATA_PATH = './data/movie/'
 PROCESSED_DATA_PATH = './data/movie/'
-UNK_THRESHOLD = 5
+UNK_THRESHOLD = 4
 
 
 def main():

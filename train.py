@@ -80,22 +80,22 @@ def test(model, device, test_loader):
 
 
 # Word Vocab
-# SEQUENCE_LENGTH = 10
+SEQUENCE_LENGTH = 8
+BATCH_SIZE = 256
+FEATURE_SIZE = 650
+TEST_BATCH_SIZE = 256
+EPOCHS = 50
+LEARNING_RATE = 0.002
+WEIGHT_DECAY = 0.0005
+
+# Char Vocab
+# SEQUENCE_LENGTH = 60
 # BATCH_SIZE = 256
-# FEATURE_SIZE = 300
+# FEATURE_SIZE = 512
 # TEST_BATCH_SIZE = 256
 # EPOCHS = 50
 # LEARNING_RATE = 0.02
 # WEIGHT_DECAY = 0.0005
-
-# Char Vocab
-SEQUENCE_LENGTH = 60
-BATCH_SIZE = 256
-FEATURE_SIZE = 512
-TEST_BATCH_SIZE = 256
-EPOCHS = 50
-LEARNING_RATE = 0.02
-WEIGHT_DECAY = 0.0005
 
 USE_CUDA = True
 PRINT_INTERVAL = 10
@@ -110,8 +110,10 @@ GRAPH_PATH = DIR_PATH + 'graphs/'
 if not os.path.exists(GRAPH_PATH):
     os.makedirs(GRAPH_PATH)
 
-data_train = prep.ContinuousDataset(prep.PROCESSED_DATA_PATH + 'train.pkl', SEQUENCE_LENGTH, BATCH_SIZE)
-data_test = prep.ContinuousDataset(prep.PROCESSED_DATA_PATH + 'test.pkl', SEQUENCE_LENGTH, TEST_BATCH_SIZE)
+char_vocab = False
+
+data_train = prep.ContinuousDataset(prep.PROCESSED_DATA_PATH + 'train.pkl', SEQUENCE_LENGTH, BATCH_SIZE, char_vocab)
+data_test = prep.ContinuousDataset(prep.PROCESSED_DATA_PATH + 'test.pkl', SEQUENCE_LENGTH, TEST_BATCH_SIZE, char_vocab)
 vocab = data_train.vocab
 print('vocab size:', len(vocab))
 
@@ -139,7 +141,7 @@ if start_epoch < EPOCHS:
 
     try:
         for epoch in range(start_epoch, EPOCHS + 1):
-            lr = LEARNING_RATE * np.power(0.25, (int(epoch / 6)))
+            lr = LEARNING_RATE * np.power(0.25, (int(epoch / 10)))
             train_loss = train(model, device, train_loader, lr, epoch, PRINT_INTERVAL)
             test_loss, test_accuracy = test(model, device, test_loader)
             train_losses.append((epoch, train_loss))
@@ -148,7 +150,6 @@ if start_epoch < EPOCHS:
             utils.write_log(LOG_PATH, (train_losses, test_losses, test_accuracies))
             model.save_best_model(test_accuracy, BEST_MODEL_PATH + '%05f.pt' % test_accuracy)
             plot.plot_graphs(train_losses, test_losses, test_accuracies, GRAPH_PATH)
-            print('train loss:', train_losses[:2])
 
     except KeyboardInterrupt as ke:
         print('Interrupted')

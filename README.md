@@ -35,3 +35,5 @@ __best test accuracy dropout(0.1): 15.87%__
 number of chars: 16896309
 
 char vocab_size: 92
+
+__best test accuracy: 58.81%__

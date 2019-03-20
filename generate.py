@@ -17,8 +17,6 @@ import models
 
 import sys
 
-import t9_wrapper.GRUModel as GRUModel
-
 
 BEAM_WIDTH = 10
 
@@ -37,7 +35,7 @@ def predict_completion(model, data, hidden, vocab):
             next_char = vocab.idx_to_char(sample.item())
             completion += next_char
 
-            if len(completion) > 2 and next_char == stop_char:
+            if len(completion) > 1 and next_char == stop_char:
                 return completion
 
             output, hidden = model.inference(sample, hidden)
@@ -128,9 +126,9 @@ def predict_next_word(model, device, seed_words, vocab, n=8):
 
 def main():
 
-    model_path = './best_models/word_large'
+    model_path = './best_models/char_large'
     feature_size = 512
-    char_vocab = False
+    char_vocab = True
 
     if char_vocab:
         vocab = prep.CharVocab(prep.PROCESSED_DATA_PATH + 'train.pkl')
@@ -163,7 +161,7 @@ def main():
             print('completions\t', completions)
 
     # seed_words = 'It\'s such a nice day today '
-    # sequence_length = 10
+    # sequence_length = 50
     #
     # generated_sentence = predict_sequence(model, device, seed_words, sequence_length, vocab, 'max')
     # print('generated with max\t', generated_sentence)
