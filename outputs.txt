@@ -1,0 +1,109 @@
+[next-word prediction]:
+
+w3:
+
+oh my
+next-word prediction:	 ['God,', 'God.', 'God!', '[???]', 'Christ,', 'mother', 'friend.', 'father']
+what is going
+next-word prediction:	 ['to', 'that', 'it', 'this', 'there', 'the', 'you', 'he']
+I'd love to
+next-word prediction:	 ['tell', 'see', 'know', 'be', 'do', 'say', 'think', 'get']
+conquer your
+next-word prediction:	 ['[???]', 'name', 'whole', 'mother', 'wife', 'God,', 'job', 'father']
+do you love
+next-word prediction:	 ['with', 'you', 'and', 'this', 'know', 'do', 'that', 'the']
+I can't live without
+next-word prediction:	 ['[???]', 'the', 'a', 'to', '--', 'you.', 'my', 'you,']
+nice to meet
+next-word prediction:	 ['[???]', 'me', 'you', 'you.', 'the', 'see', 'me?', 'me,']
+
+c2:
+beam width: 12
+--beam search (with top K probabilities) without averaging (p(word)/len(word)):
+
+oh my
+next-word prediction:	 ['not ', 'no ', 'only ', 'now, ', 'one ', 'now ', 'now? ', 'thing ']
+what is going
+next-word prediction:	 ['to ', 'on ', 'in ', 'for ', 'out ', 'with ', 'on? ', 'to? ']
+I'd love to
+next-word prediction:	 ['do ', 'get ', 'be ', 'go ', 'know ', 'have ', 'take ', 'talk ']
+conquer your
+next-word prediction:	 ['own ', 'name ', 'way ', 'time ', 'friend ', 'wife ', 'head ', 'name. ']
+do you love
+next-word prediction:	 ['to ', 'you ', 'a ', 'with ', 'in ', 'your ', 'me ', 'you? ']
+I can't live without
+next-word prediction:	 ['a ', 'the ', 'my ', 'you ', 'your ', 'you. ', 'it ', 'it. ']
+nice to meet
+next-word prediction:	 ['you ', 'a ', 'to ', 'the ', 'your ', 'my ', 'me ', 'you? ']
+
+
+--with averaging (bad idea!)
+
+oh my
+next-word prediction:	 ['no ', 'not ', 'one ', 'now ', 'only ', 'now, ', 'now? ', 'now. ']
+what is going
+next-word prediction:	 ['to ', 'on ', 'in ', 'for ', 'out ', 'on? ', 'to? ', 'with ']
+I'd love to
+next-word prediction:	 ['do ', 'be ', 'go ', 'get ', 'see ', 'say ', 'know ', 'have ']
+conquer your
+next-word prediction:	 ['own ', 'way ', 'name ', 'time ', 'wife ', 'head ', 'name. ', 'heart ']
+do you love
+next-word prediction:	 ['a ', 'to ', 'in ', 'me ', 'it ', 'you ', 'the ', 'with ']
+I can't live without
+next-word prediction:	 ['a ', 'my ', 'it ', 'the ', 'you ', 'it. ', 'his ', 'your ']
+nice to meet
+next-word prediction:	 ['a ', 'to ', 'my ', 'me ', 'it ', 'you ', 'the ', 'your ']
+
+
+[sentence-generation]:
+
+seed words: It's such a nice day today
+beam width: 10 (via sampling)
+temperature: 1.5
+
+w3:
+sequence_length = 15
+
+It's such a nice day today
+else is [???] I just thought so.
+I think you ought to put you a
+
+It's such a nice day today
+[???] you can't believe I have to
+figure out how long I was going to
+
+It's such a nice day today
+when will you find them if
+you don't let me make you all the way
+
+It's such a nice day today
+I owe him a chance to talk to me
+if I would want to go
+
+It's such a nice day today to protect me.
+Thank you.
+But I don't know what I feel like if I
+
+
+c2:
+sequence length = 80
+
+It's such a nice day today.
+I don't know what I was thinking about
+the way to the one of the street of the
+
+It's such a nice day today.
+I don't know what I was a little big deal.
+I don't know what you want to talk
+
+It's such a nice day today?
+I don't know what I was thinking about
+the world and I was a little boy with t
+
+It's such a nice day today.
+I don't know what I was thinking about
+the way to be the one who was a couple
+
+It's such a nice day today.
+I don't know what I was thinking about
+the way to the other way to the state o
